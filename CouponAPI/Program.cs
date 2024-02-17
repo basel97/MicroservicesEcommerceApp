@@ -7,9 +7,7 @@ using System.Net;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddApplicationService(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -29,8 +27,9 @@ builder.Services.Configure<ApiBehaviorOptions>(o =>
     };
 });
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("couponDb")));
+//authorization JWT
+builder.Services.AddAppAuthorization(builder.Configuration);
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -39,7 +38,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllers();

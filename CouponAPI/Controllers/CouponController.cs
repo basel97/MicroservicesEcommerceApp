@@ -2,8 +2,10 @@
 using CouponAPI.DTOS.Responses;
 using CouponAPI.Helpers;
 using CouponAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace CouponAPI.Controllers
 {
@@ -19,9 +21,11 @@ namespace CouponAPI.Controllers
             _couponWork = couponWork;
             _response = response;
         }
+        [Authorize]
         [HttpGet]
         public async Task<APIResponse<Paginator<CouponsRespone>>> GetCoupons([FromQuery] PageParams pageParams)
         {
+            var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result = await _couponWork.OnGetALLCouponsAsync(pageParams);
             return result.Succeeded ? result : result;
         }
